@@ -13,7 +13,7 @@ class SonicSensor:
 		GPIO.setup(trig_pin, GPIO.OUT)
 		GPIO.setup(echo_pin, GPIO.IN)
 
-	def get_distance():
+	def get_distance(self):
 		# set Trigger to HIGH
 	    GPIO.output(self.trig_pin, True)
 	    
