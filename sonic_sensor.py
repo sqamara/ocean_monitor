@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from constants import SPEED_OF_SOUND
 
 class SonicSensor:
 	
@@ -24,18 +25,18 @@ class SonicSensor:
 	    StartTime = time.time()
 	    StopTime = time.time()
 	    
-	    # save StartTime
-	    while GPIO.input(self.echo_pin) == 0:
-	        StartTime = time.time()
+	    # # save StartTime
+	    # while GPIO.input(self.echo_pin) == 0:
+	    #     StartTime = time.time()
 	    
-	    # save time of arrival
-	    while GPIO.input(self.echo_pin) == 1:
-	        StopTime = time.time()
+	    # # save time of arrival
+	    # while GPIO.input(self.echo_pin) == 1:
+	    #     StopTime = time.time()
 	    
 	    # time difference between start and arrival
 	    TimeElapsed = StopTime - StartTime
 	    # multiply with the sonic speed (34300 cm/s)
 	    # and divide by 2, because there and back
-	    distance = (TimeElapsed * 34300) / 2
+	    distance = (TimeElapsed * SPEED_OF_SOUND) / 2
 
 	    return distance
