@@ -19,9 +19,6 @@ class RotaryEncoder:
         GPIO.setup(self.Enc_A, GPIO.IN) # pull-ups are too weak, they introduce noise
         GPIO.setup(self.Enc_B, GPIO.IN)
 
-        # setup an event detection thread for the A encoder switch
-        GPIO.add_event_detect( self.Enc_A, GPIO.RISING, callback=self.rotation_decode, bouncetime=2) # bouncetime in mSec
-
     def get_count(self):
         return self.counter
 
@@ -77,6 +74,10 @@ class RotaryEncoder:
         else: # discard all other combinations
             return
 
+    def start(self):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.add_event_detect( self.Enc_A, GPIO.RISING, callback=self.rotation_decode, bouncetime=2) # bouncetime in mSec
+
     def stop(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.remove_event_detect(self.Enc_A)
@@ -86,6 +87,7 @@ class RotaryEncoder:
 def main():
     try:
         rotary = RotaryEncoder(dt_pin=3, clk_pin=4)
+        rotary.start()
         while True :
             #
             # wait for an encoder click

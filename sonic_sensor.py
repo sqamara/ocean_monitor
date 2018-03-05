@@ -25,13 +25,13 @@ class SonicSensor:
 	    StartTime = time.time()
 	    StopTime = time.time()
 	    
-	    # # save StartTime
-	    # while GPIO.input(self.echo_pin) == 0:
-	    #     StartTime = time.time()
+	    # save StartTime
+	    while GPIO.input(self.echo_pin) == 0:
+	        StartTime = time.time()
 	    
-	    # # save time of arrival
-	    # while GPIO.input(self.echo_pin) == 1:
-	    #     StopTime = time.time()
+	    # save time of arrival
+	    while GPIO.input(self.echo_pin) == 1:
+	        StopTime = time.time()
 	    
 	    # time difference between start and arrival
 	    TimeElapsed = StopTime - StartTime

@@ -7,6 +7,7 @@ from RPLCD import CharLCD
 def main():
     try:
         rotary = RotaryEncoder(dt_pin=3, clk_pin=4)
+        rotary.start()
         button = Button(pin=2)
         lcd = CharLCD(numbering_mode=GPIO.BCM, cols=16, rows=2, pin_rs=21, pin_e=20, pins_data=[5,7,8,25,26,19,13,6])
         while True :
