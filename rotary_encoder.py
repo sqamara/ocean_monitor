@@ -3,8 +3,10 @@ from time import sleep
 
 class RotaryEncoder:
 
-    def __init__(self, dt_pin, clk_pin):
-        self.counter = 0 # starting point for the running directional counter
+    def __init__(self, dt_pin, clk_pin, lower_limit=-100, upper_limit=100):
+        self.counter = lower_limit # starting point for the running directional counter
+        self.lower_limit = lower_limit
+        self.upper_limit = upper_limit
 
         # GPIO Ports
         self.Enc_A = dt_pin  # Encoder input A: input GPIO 23 (active high)
@@ -53,7 +55,8 @@ class RotaryEncoder:
         Switch_B = GPIO.input(self.Enc_B)
 
         if (Switch_A == 1) and (Switch_B == 0) : # A then B ->
-            self.counter += 1
+            if self.counter+1 < self.upper_limit:
+                self.counter += 1
             #print("direction -> ", self.counter)
             # at this point, B may still need to go high, wait for it
             while Switch_B == 0:
@@ -64,7 +67,8 @@ class RotaryEncoder:
             return
 
         elif (Switch_A == 1) and (Switch_B == 1): # B then A <-
-            self.counter -= 1
+            if self.counter-1 >= self.lower_limit:
+                self.counter -= 1
             #print("direction <- ", self.counter)
             # A is already high, wait for A to drop to end the click cycle
             while Switch_A == 1:
