@@ -28,12 +28,13 @@ def running_average(points, window=10):
 
     return res
 
-def exponential_filter(points, weight=.3):
+def exponential_filter(points, weight=.3, iterations=1):
     points_len = len(points)
     res = np.empty(points_len)
     res[0] = points[0]
 
-    for i in range(1, points_len):
-        res[i] = weight*res[i-1] + (1-weight)*points[i]
+    for i in range(iterations):
+        for i in range(1, points_len):
+            res[i] = weight*res[i-1] + (1-weight)*points[i]
 
     return res
