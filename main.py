@@ -6,14 +6,14 @@ import pickle
 
 def main():
 
-    iterations = 300 
-    interval = 0.05
+    iterations = 30 
+    interval = 0.1
     print("starting {} second collection".format(iterations*interval))
 
 
     sensor1 = SonicSensor(trig_pin=18, echo_pin=24, numbering_mode=GPIO.BCM)
     sensor2 = SonicSensor(trig_pin=16, echo_pin=12, numbering_mode=GPIO.BCM)
-    lcd = CharLCD(numbering_mode=GPIO.BCM, cols=16, rows=2, pin_rs=21, pin_e=20, pins_data=[26,19,13,6])
+    lcd = CharLCD(numbering_mode=GPIO.BCM, cols=16, rows=2, pin_rs=21, pin_e=20, pins_data=[5,7,8,25,26,19,13,6])
 
     results1 = []
     results2 = []
