@@ -1,0 +1,26 @@
+                 +-----+---Pi 3---+-----+
+                 | BCM | Physical | BCM |
+                 +-----+----++----+-----+
+white to shft    |     |  1 || 2  |     |
+black to button  |   2 |  3 || 4  |     | white to red rail
+brown to rot DT  |   3 |  5 || 6  |     | gray to blue rail
+red to rot CLK   |   4 |  7 || 8  | 14  |
+                 |     |  9 || 10 | 15  |
+                 |  17 | 11 || 12 | 18  | green to s1 trig
+                 |  27 | 13 || 14 |     | 
+                 |  22 | 15 || 16 | 23  | 
+white to shft    |     | 17 || 18 | 24  | blue to s1 echo
+                 |  10 | 19 || 20 |     | 
+                 |   9 | 21 || 22 | 25  | green to lcd D3
+                 |  11 | 23 || 24 | 8   | red to lcd D2
+                 |     | 25 || 26 | 7   | white to lcd D1
+                 |   0 | 27 || 28 | 1   | 
+black to LCD D0  |   5 | 29 || 30 |     | 
+green to LCD D7  |   6 | 31 || 32 | 12  | blue to s2 echo
+blue to LCD D6   |  13 | 33 || 34 |     | 
+purp to LCD D5   |  19 | 35 || 36 | 16  | purp to s2 trig 
+gray to LCD D4   |  26 | 37 || 38 | 20  | org to LCD E
+                 |     | 39 || 40 | 21  | yel to LCD RS
+                 +-----+----++----+-----+ 
+                 | BCM | Physical | BCM | 
+                 +-----+---Pi 3---+-----+ 
