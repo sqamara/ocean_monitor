@@ -1,10 +1,15 @@
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
-import sys
 
 from filters import *
 from smoothers import *
+from peaks import *
 
 def reject_outliers(data):
     print(np.median(data))
@@ -36,7 +41,7 @@ rolling average
 exponential filter
 '''
 def last_running_avg():
-    filename = './data/water_tray.pickle'
+    filename = '../data/water_tray.pickle'
 
     with open(filename, 'rb') as file:
         results1, results2 = pickle.load(file)
@@ -95,9 +100,11 @@ def last_running_avg():
 
     def is_peak(indx,signal):
         if signal[indx] > signal[indx-1] and signal[indx] > signal[indx+1]:
-            return True
+            return 1
+        elif signal[indx] < signal[indx-1] and signal[indx] < signal[indx+1]:
+            return -1
         else:
-            return False
+            return 0
 
     # given an index from signal1 the function returns the next indx in signal2 that 
     # matches the peak characteristic of the provided index
@@ -129,7 +136,7 @@ def last_running_avg():
 
 def rolling_median_x_smoothing(both=False):
     
-    filename = './data/water_tray.pickle'
+    filename = '../data/water_tray.pickle'
 
     with open(filename, 'rb') as file:
         results1, results2 = pickle.load(file)
@@ -199,7 +206,7 @@ def main():
     if (len(sys.argv) > 1):
         filename = sys.argv[1]
     else:
-        filename = 'results.pickle'
+        filename = '../data/results.pickle'
 
     with open(filename, 'rb') as file:
         results1, results2 = pickle.load(file)

@@ -1,3 +1,5 @@
+import numpy as np
+
 def is_peak(indx,signal):
     if signal[indx] > signal[indx-1] and signal[indx] > signal[indx+1]:
         return 1
