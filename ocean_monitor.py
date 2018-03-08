@@ -56,32 +56,33 @@ class OceanMonitor:
 
         # misc
         self.calibration_delay = 0  # s   time used after setting water level to move sensor into place
+        self.line2 = u'Wave: None'
 
     
     '''
     A control loop in which user uses the rotary encoder to set the initial water level
     '''
     def set_initial_distance(self):
-        #self.rotary.start()
-        #self.lcd.clear()
-        #while self.rotary.get_count() == 0:
-        #    self.lcd.clear()
-        #    self.lcd.write_string(u'Use dial to set  water level    ')
-        #    time.sleep(2)
-        #    
-        #    self.lcd.clear()
-        #    self.lcd.write_string(u'press button     when set')
-        #    time.sleep(1.5)
+        self.rotary.start()
+        self.lcd.clear()
+        while self.rotary.get_count() == 0:
+            self.lcd.clear()
+            self.lcd.write_string(u'Use dial to set  water level    ')
+            time.sleep(2)
+            
+            self.lcd.clear()
+            self.lcd.write_string(u'press button     when set')
+            time.sleep(1.5)
 
-        #while True :
-        #    if self.button.pressed():
-        #        break
-        #    self.lcd.clear()
-        #    self.lcd.write_string(u'{} cm'.format(self.rotary.get_count()*10))
-        #    time.sleep(0.1)
-        #
-        #self.rotary.stop()
-        self.initial_water_level = 100#self.rotary.get_count()*10
+        while True :
+            if self.button.pressed():
+                break
+            self.lcd.clear()
+            self.lcd.write_string(u'{} cm'.format(self.rotary.get_count()*10))
+            time.sleep(0.1)
+        
+        self.rotary.stop()
+        self.initial_water_level = self.rotary.get_count()*10
         self.lcd.clear()
         self.lcd.write_string('Set level to     {} cm'.format(self.initial_water_level))
 
@@ -135,9 +136,6 @@ class OceanMonitor:
     '''
     def __iteration(self):
         # if there are no current waves detected then report tide
-        if self.counter == -1:
-            self.lcd.clear()
-            self.lcd.write_string(u'Tide             Height: {0:.1f} cm'.format(self.__get_tide()))
 
     
         # get data from left sensor
@@ -158,6 +156,8 @@ class OceanMonitor:
         #    print '{0:.2f},'.format(d),
         #print
            
+        line1 = u'Tide: {0:5.1f} cm  '.format(self.__get_tide())
+
         if (was_previous_a_peak_left == -1):
             # it was a trough in the measurement then it is a wave peak
             if abs(clean_data_left[-self.lag-1]-self.current_median_dist) > 5:
@@ -167,11 +167,12 @@ class OceanMonitor:
            
                 self.prev_peak_dist = clean_data_left[-2]
                 # inform the world
-                self.lcd.clear()
-                self.lcd.write_string(u'Incoming Wave     Height: {0:.1f} cm'.format(self.current_median_dist-clean_data_left[-self.lag-1]))
-                self.counter = .5 
+                self.line2 = u'Wave: {0:5.1f} cm'.format(self.current_median_dist-clean_data_left[-self.lag-1])
+                self.counter = 0
             else:
                 pass #wave was too small, probably not a real wave
+        self.lcd.clear()
+        self.lcd.write_string(line1+self.line2)
 
         #print('trough {}, peak {}'.format(self.prev_trough_dist,self.prev_peak_dist))
 
@@ -224,6 +225,7 @@ class OceanMonitor:
 
             self.lcd.clear()
             self.lcd.write_string('CALIBRATING:    Done!')
+            self.line2 = u'Wave: None'
             time.sleep(1)
 
             # run main event loop
