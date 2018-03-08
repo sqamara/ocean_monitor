@@ -50,8 +50,7 @@ class OceanMonitor:
         # parameters and variables for speed
         self.sensor_spacing     = 10    # cm 
         self.delay              = .3    # time to do one iteration
-        self.prev_peak_dist     = -1    # save wave peak height
-        self.prev_trough_dist   = -1    # save wave trough height
+        self.left_peak          = False
         self.counter            = -1    # used as unit of time
 
         # misc
@@ -108,7 +107,7 @@ class OceanMonitor:
     calulates the tide form the initial water level and the current mean
     '''
     def __get_tide(self):
-        print(self.initial_water_level , self.initial_median_dist , self.current_median_dist)
+        #print(self.initial_water_level , self.initial_median_dist , self.current_median_dist)
 
         return self.initial_water_level + self.initial_median_dist - self.current_median_dist
     
@@ -147,10 +146,10 @@ class OceanMonitor:
 
         # check if the previous was a peak
         was_previous_a_peak_left = recent_peak(clean_data_left, lag=self.lag)
-        print was_previous_a_peak_left, 
-        print self.raw_data_left[-1],
-        print self.data_left[-1], clean_data_left[-1],
-        print np.median(clean_data_left), self.current_median_dist
+        #print was_previous_a_peak_left, 
+        #print self.raw_data_left[-1],
+        #print self.data_left[-1], clean_data_left[-1],
+        #print np.median(clean_data_left), self.current_median_dist
         #print (np.std(clean_data_left), clean_data_left[-2], np.median(clean_data_left))
         #for d in clean_data_left:
         #    print '{0:.2f},'.format(d),
@@ -161,36 +160,34 @@ class OceanMonitor:
         if (was_previous_a_peak_left == -1):
             # it was a trough in the measurement then it is a wave peak
             if abs(clean_data_left[-self.lag-1]-self.current_median_dist) > 5:
-                for d in clean_data_left:
-                    print '{0:.2f},'.format(d),
-                print
+                #for d in clean_data_left:
+                #    print '{0:.2f},'.format(d),
+                #print
            
                 self.prev_peak_dist = clean_data_left[-2]
                 # inform the world
                 self.line2 = u'Wave: {0:5.1f} cm'.format(self.current_median_dist-clean_data_left[-self.lag-1])
-                self.counter = 0
+                self.counter = 1
+                self.left_peak = True
             else:
                 pass #wave was too small, probably not a real wave
         self.lcd.clear()
         self.lcd.write_string(line1+self.line2)
 
-        #print('trough {}, peak {}'.format(self.prev_trough_dist,self.prev_peak_dist))
-
         # get data from right sensor
         self.raw_data_right.append( self.sensor_right.get_distance() )
         # perform outlier check
-        self.data_right.append( rolling_median_filter_last_point(np.array(self.raw_data_right), threshold=self.threshold, replace_with=self.data_right[-1]))
+        self.data_right.append( rolling_median_filter_last_point(np.array(self.raw_data_right), threshold=self.threshold, replace_with=self.data_right[-1]) )
+        # smooth on checked data
         clean_data_right = exponential_filter(self.data_right, weight=self.weight, iterations=self.iterations)
 
-        #was_previous_a_peak_right = is_peak(self.window-1-self.lag, clean_data_right)
-        #if (was_previous_a_peak_left == -1):
-        #    # it was a trough in the measurement then it is a wave peak
-        #    # height = self.prev_trough_dist - clean_data_right[-1-self.lag] # height of the wave is trough less most recent read of wave peak
-        #    speed = self.__calc_speed()
-        #    # inform the world
-        #    self.lcd.clear()
-        #    self.lcd.write_string(u'Incoming Wave     Speed: {0:.1f}'.format(speed))
-        #    self.counter = -1
+        # check if the previous was a peak
+        was_previous_a_peak_right = recent_peak(clean_data_right, lag=self.lag)
+
+        if (was_previous_a_peak_right == -1 and self.left_peak):
+            speed = self.__calc_speed()
+            self.line2 = u'Wave: {0:5.1f} cm/s'.format(self.counter)
+            self.left_peak = False
     
         self.__update_median_dist(clean_data_left[-1], clean_data_right[-1])
         self.counter += 1
