@@ -1,3 +1,8 @@
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
 import RPi.GPIO as GPIO
 from RPLCD import CharLCD
 import time
@@ -6,7 +11,7 @@ import pickle
 
 def main():
 
-    iterations = 30 
+    iterations = 300
     interval = 0.1
     print("starting {} second collection".format(iterations*interval))
 
@@ -22,12 +27,14 @@ def main():
         for i in range(iterations):
             dist1 = sensor1.get_distance()
             dist2 = sensor2.get_distance()
-            
+
             results1.append(dist1)
             results2.append(dist2)
             
             lcd.write_string(u'%.1f cm'% dist2)
+            print(u'%.1f cm'% dist2)
             lcd.write_string(u'\n%.1f cm'% dist1)
+            print(u'%.1f cm'% dist1)
             
             time.sleep(interval)
             lcd.clear()

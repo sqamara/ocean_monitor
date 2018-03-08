@@ -60,7 +60,7 @@ def get_median_filtered_nearest_replacement(signal, threshold=3):
 
 def get_rolling_median_filtered(signal, window=10, threshold=3, replace_with='median'):
 
-    for i in range(window, len(signal)):
+    for i in range(window-1, len(signal)):
         subsignal = signal[i+1-window:i+1]
         difference = np.abs(subsignal - np.median(subsignal))
         median_difference = np.median(difference)
@@ -76,3 +76,16 @@ def get_rolling_median_filtered(signal, window=10, threshold=3, replace_with='me
             elif (replace_with == 'last'):
                 signal[i] = signal[i-1]
     return signal
+
+
+def rolling_median_filter_last_point(signal, replace_with, threshold=3):
+    i = len(signal)-1
+    difference = np.abs(signal - np.median(signal))
+    median_difference = np.median(difference)
+    if median_difference == 0:
+        s = 0
+    else:
+        s = difference[-1] / float(median_difference)
+    if s > threshold:
+        return replace_with
+    return signal[i]

@@ -1,9 +1,12 @@
 import numpy as np
 
-def is_peak(indx,signal):
-    if signal[indx] > signal[indx-1] and signal[indx] > signal[indx+1]:
+def recent_peak(signal, lag=1):
+    point = signal[-lag-1]
+    subsignal = signal[-2*lag-1:]
+    
+    if max(subsignal) == point:
         return 1
-    elif signal[indx] < signal[indx-1] and signal[indx] < signal[indx+1]:
+    elif min(subsignal) == point:
         return -1
     else:
         return 0
